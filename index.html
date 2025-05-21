@@ -2,45 +2,52 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Methankrieg SVG Prototyp</title>
+  <title>Methankrieg Prototyp – Sichtbare Marker</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
       height: 100%;
       background-color: #111;
+      overflow: hidden;
     }
     #container {
       width: 100vw;
       height: 100vh;
       overflow: scroll;
-      background: #222;
+      background-color: #222;
+      position: relative;
     }
     #karte_svg {
-      transform-origin: 0 0;
-      transition: transform 0.05s ease-out;
+      width: 100%;
+      height: auto;
+      display: block;
     }
     .marker {
       position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: lime;
+      opacity: 0.7;
+      border: 2px solid #0f0;
       pointer-events: none;
-      z-index: 10;
+      z-index: 100;
     }
     #debug-panel {
       position: absolute;
       top: 10px;
       right: 10px;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       color: #0f0;
       font-family: monospace;
       padding: 10px;
       font-size: 12px;
       border: 1px solid #0f0;
-      z-index: 1000;
+      z-index: 200;
     }
   </style>
   <script src="gameState_v1_marker.js"></script>
-  <script src="karte_marker_v2.js"></script>
 </head>
 <body>
 <div id="container">
@@ -49,61 +56,31 @@
 <div id="debug-panel">Debug: Initialisiert...</div>
 
 <script>
-let scale = 1;
-const container = document.getElementById("container");
+const svg = document.getElementById("karte_svg");
 const debugPanel = document.getElementById("debug-panel");
-
-container.addEventListener("wheel", function(e) {
-  e.preventDefault();
-  const direction = e.deltaY > 0 ? -0.1 : 0.1;
-  scale = Math.min(Math.max(0.2, scale + direction), 5);
-  const svg = document.getElementById("karte_svg");
-  if (svg) {
-    svg.style.transform = 'scale(' + scale + ')';
-  }
-});
-
-const svgDoc = document.getElementById("karte_svg");
 const startmarker = gameState.startaufstellung || [];
 let platzierteMarker = 0;
+
 debugPanel.innerHTML = 'Startmarker erkannt: ' + startmarker.length + '<br>';
 
-startmarker.forEach(function(marker) {
-  const hex = svgDoc.getElementById(marker.feld);
+startmarker.forEach(marker => {
+  const hex = svg.getElementById(marker.feld);
   if (!hex) {
     debugPanel.innerHTML += 'Feld nicht gefunden: ' + marker.feld + '<br>';
     return;
   }
 
-  let templateKey = '';
-  if (marker.einheit.startsWith('admiral')) {
-    templateKey = marker.fraktion + '_admiral';
-  } else if (marker.einheit.includes('raumfort')) {
-    templateKey = 'arkoniden_raumfort';
-  } else if (marker.einheit.includes('trägersch')) {
-    templateKey = 'maahks_traeger';
-  } else if (marker.einheit.includes('jäger')) {
-    templateKey = 'maahks_jaeger';
-  } else {
-    templateKey = marker.fraktion + '_standard';
-  }
-
-  const template = markerTemplates[templateKey];
-  if (!template) {
-    debugPanel.innerHTML += 'Kein Template für: ' + templateKey + '<br>';
-    return;
-  }
-
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('marker');
-  wrapper.innerHTML = template;
-
   const bbox = hex.getBoundingClientRect();
-  const svgBBox = svgDoc.getBoundingClientRect();
-  wrapper.style.left = (bbox.left - svgBBox.left) + 'px';
-  wrapper.style.top = (bbox.top - svgBBox.top) + 'px';
+  const svgBBox = svg.getBoundingClientRect();
 
-  document.body.appendChild(wrapper);
+  const markerEl = document.createElement("div");
+  markerEl.classList.add("marker");
+
+  // Positionierung anhand BoundingBox-Zentrum
+  markerEl.style.left = (window.scrollX + bbox.left - svgBBox.left + bbox.width / 2 - 12) + "px";
+  markerEl.style.top = (window.scrollY + bbox.top - svgBBox.top + bbox.height / 2 - 12) + "px";
+
+  document.body.appendChild(markerEl);
   platzierteMarker++;
 });
 
