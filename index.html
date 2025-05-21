@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Kartenanzeige mit Debug</title>
+  <title>Prototyp – Marker laden & debuggen</title>
   <script src="gameState_v1_marker.js"></script>
   <script src="karte_marker_v2.js"></script>
   <style>
@@ -18,21 +18,29 @@
       height: 100vh;
       overflow: scroll;
       background: #222;
+      position: relative;
     }
     #karte_obj {
       transform-origin: 0 0;
-      transition: transform 0.05s ease-out;
+      transition: transform 0.1s ease-out;
     }
     .marker {
+      width: 64px;
+      height: 64px;
       position: absolute;
-      pointer-events: none;
+      transform: translate(-50%, -50%);
       z-index: 10;
+    }
+    .marker img {
+      max-width: 100%;
+      height: auto;
+      display: block;
     }
     #debug-panel {
       position: absolute;
       top: 10px;
       left: 10px;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.8);
       color: #0f0;
       font-family: monospace;
       padding: 10px;
@@ -54,24 +62,30 @@
 <script>
 function debug(msg) {
   const panel = document.getElementById("debug-panel");
-  panel.innerHTML += msg + "<br>";
+  if (panel) {
+    panel.innerHTML += msg + "<br>";
+  }
   console.log("[DEBUG]", msg);
 }
 
 let scale = 1;
 const container = document.getElementById("container");
+const obj = document.getElementById("karte_obj");
+
 container.addEventListener("wheel", (e) => {
   e.preventDefault();
   const direction = e.deltaY > 0 ? -0.1 : 0.1;
-  scale = Math.min(Math.max(0.2, scale + direction), 5);
-  const obj = document.getElementById("karte_obj");
+  scale = Math.min(Math.max(0.2, scale + direction), 4);
   obj.style.transform = `scale(${scale})`;
+  document.querySelectorAll(".marker").forEach(m => {
+    m.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  });
 });
 
-document.getElementById("karte_obj").addEventListener("load", () => {
-  const svgDoc = document.getElementById("karte_obj").contentDocument;
+obj.addEventListener("load", async () => {
+  const svgDoc = obj.contentDocument;
   if (!svgDoc) {
-    debug("Fehler: SVG-Dokument nicht geladen.");
+    debug("❌ SVG-Dokument konnte nicht geladen werden.");
     return;
   }
 
@@ -79,31 +93,28 @@ document.getElementById("karte_obj").addEventListener("load", () => {
   debug(`Startmarker erkannt: ${startmarker.length}`);
   let platzierteMarker = 0;
 
-  startmarker.forEach(marker => {
+  for (const marker of startmarker) {
     debug(`→ Verarbeite Marker: ${marker.einheit} @ ${marker.feld}`);
     const hex = svgDoc.getElementById(marker.feld);
     if (!hex) {
       debug(`❌ Feld nicht gefunden: ${marker.feld}`);
-      return;
+      continue;
     }
 
-    let templateKey = "";
-    if (marker.einheit.startsWith("admiral")) {
-      templateKey = marker.fraktion + "_admiral";
-    } else if (marker.einheit.includes("raumfort")) {
-      templateKey = "arkoniden_raumfort";
-    } else if (marker.einheit.includes("trägersch")) {
-      templateKey = "maahks_traeger";
-    } else if (marker.einheit.includes("jäger")) {
-      templateKey = "maahks_jaeger";
-    } else {
-      templateKey = marker.fraktion + "_standard";
-    }
+    let typ = "standard";
+    if (marker.einheit.startsWith("admiral")) typ = "admiral";
+    else if (marker.einheit.includes("raumfort")) typ = "raumfort";
+    else if (marker.einheit.includes("trägersch")) typ = "traeger";
+    else if (marker.einheit.includes("jäger")) typ = "jaeger";
 
-    const template = markerTemplates[templateKey];
+    const key = marker.fraktion + "_" + typ;
+    if (!markerTemplates[key]) {
+      await loadMarkerTemplate(marker.fraktion, typ);
+    }
+    const template = markerTemplates[key];
     if (!template) {
-      debug(`❌ Kein Template für Typ: ${templateKey}`);
-      return;
+      debug(`❌ Kein Template geladen: ${key}`);
+      continue;
     }
 
     const wrapper = document.createElement("div");
@@ -112,15 +123,16 @@ document.getElementById("karte_obj").addEventListener("load", () => {
 
     const bbox = hex.getBoundingClientRect();
     const svgBBox = svgDoc.documentElement.getBoundingClientRect();
-    const x = bbox.left - svgBBox.left;
-    const y = bbox.top - svgBBox.top;
+    const x = bbox.left - svgBBox.left + bbox.width / 2 + window.scrollX;
+    const y = bbox.top - svgBBox.top + bbox.height / 2 + window.scrollY;
     wrapper.style.left = `${x}px`;
     wrapper.style.top = `${y}px`;
+    wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
 
     document.body.appendChild(wrapper);
-    debug(`✅ Marker platziert bei ${marker.feld}: ${templateKey} (x=${x.toFixed(1)}, y=${y.toFixed(1)})`);
+    debug(`✅ Marker platziert bei ${marker.feld} (${x.toFixed(1)}, ${y.toFixed(1)})`);
     platzierteMarker++;
-  });
+  }
 
   debug(`✔️ Platzierte Marker: ${platzierteMarker}`);
 });
