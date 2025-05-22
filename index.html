@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Prototyp – Marker exakt im Hex</title>
+  <title>Prototyp – Marker mit getBBox()</title>
   <script src="gameState_v1_marker.js"></script>
   <script src="karte_marker_v2.js"></script>
   <style>
@@ -99,24 +100,17 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     markerCount[marker.feld] = (markerCount[marker.feld] || 0) + 1;
   }
 
-  // Berechne Mittelpunkt aller verwendeten Hexe
+  // Berechne Mittelpunkt aller verwendeten Hexe mit getBBox()
   for (const feld in markerCount) {
     const hex = svgDoc.getElementById(feld);
     if (!hex) {
       debug(`❌ Feld nicht gefunden: ${feld}`);
       continue;
     }
-    const pointsAttr = hex.getAttribute("points");
-    if (!pointsAttr) {
-      debug(`❌ Kein 'points'-Attribut im Polygon für ${feld}`);
-      continue;
-    }
-    const coords = pointsAttr.trim().split(" ").map(p => {
-      const [x, y] = p.split(",").map(Number);
-      return {x, y};
-    });
-    const cx = coords.reduce((sum, p) => sum + p.x, 0) / coords.length;
-    const cy = coords.reduce((sum, p) => sum + p.y, 0) / coords.length;
+
+    const bbox = hex.getBBox();
+    const cx = bbox.x + bbox.width / 2;
+    const cy = bbox.y + bbox.height / 2;
     feldPosition[feld] = {x: cx, y: cy};
   }
 
