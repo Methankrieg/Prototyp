@@ -8,7 +8,17 @@
 
 function startMarkerAnimationLoop() {
   const svgDoc = document.getElementById("karte_obj").contentDocument;
-  const startmarker = gameState.startaufstellung || [];
+  
+if (typeof gameState === 'undefined') {
+  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+  return;
+}
+if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+  return;
+}
+const startmarker = gameState.startaufstellung;
+
 
   function update() {
     for (const marker of startmarker) {
@@ -44,7 +54,17 @@ function startMarkerAnimationLoop() {
 }
 
   const svgDoc = document.getElementById("karte_obj").contentDocument;
-  const startmarker = gameState.startaufstellung || [];
+  
+if (typeof gameState === 'undefined') {
+  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+  return;
+}
+if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+  return;
+}
+const startmarker = gameState.startaufstellung;
+
 
   function updatePositions() {
     for (const marker of startmarker) {
@@ -84,7 +104,17 @@ function startMarkerAnimationLoop() {
 
 function startMarkerAnimationLoop() {
   const svgDoc = document.getElementById("karte_obj").contentDocument;
-  const startmarker = gameState.startaufstellung || [];
+  
+if (typeof gameState === 'undefined') {
+  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+  return;
+}
+if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+  return;
+}
+const startmarker = gameState.startaufstellung;
+
 
   function update() {
     for (const marker of startmarker) {
@@ -120,7 +150,17 @@ function startMarkerAnimationLoop() {
 }
 
   const svgDoc = document.getElementById("karte_obj").contentDocument;
-  const startmarker = gameState.startaufstellung || [];
+  
+if (typeof gameState === 'undefined') {
+  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+  return;
+}
+if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+  return;
+}
+const startmarker = gameState.startaufstellung;
+
 
   function updatePositions() {
     for (const marker of startmarker) {
@@ -221,7 +261,7 @@ function startMarkerAnimationLoop() {
 <div id="container">
   <object id="karte_obj" type="image/svg+xml" data="Sektor_Template_mit_MarkerTargets.svg"></object>
 </div>
-<div id="debug-panel">Debug: Initialisiert...</div>
+<div id="debug-panel">Debug: Initialisiert... (Diagnose-Modus aktiv)</div>
 
 <script>
 function debug(msg) {
@@ -239,7 +279,17 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     return;
   }
 
-  const startmarker = gameState.startaufstellung || [];
+  
+if (typeof gameState === 'undefined') {
+  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+  return;
+}
+if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+  return;
+}
+const startmarker = gameState.startaufstellung;
+
   debug(`Startmarker erkannt: ${startmarker.length}`);
   let platzierteMarker = 0;
   const feldPosition = {};
@@ -319,7 +369,17 @@ document.getElementById("karte_obj").addEventListener("load", () => {
 
 function startMarkerAnimationLoop() {
   const svgDoc = document.getElementById("karte_obj").contentDocument;
-  const startmarker = gameState.startaufstellung || [];
+  
+if (typeof gameState === 'undefined') {
+  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+  return;
+}
+if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+  return;
+}
+const startmarker = gameState.startaufstellung;
+
 
   function update() {
     for (const marker of startmarker) {
@@ -355,7 +415,17 @@ function startMarkerAnimationLoop() {
 }
 
   const svgDoc = document.getElementById("karte_obj").contentDocument;
-  const startmarker = gameState.startaufstellung || [];
+  
+if (typeof gameState === 'undefined') {
+  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+  return;
+}
+if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+  return;
+}
+const startmarker = gameState.startaufstellung;
+
 
   function updatePositions() {
     for (const marker of startmarker) {
