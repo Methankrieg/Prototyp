@@ -179,7 +179,7 @@ document.getElementById("karte_obj").addEventListener("load", () => {
         const faction = startmarker.find(m => m.feld === feld)?.fraktion || "arkoniden";
         if (faction === "arkoniden") {
           label.style.background = "#f00";
-          label.style.left = (feldPosition[feld].x + 50) + "px";
+          label.style.left = (feldPosition[feld].x - 50) + "px";
         } else {
           label.style.background = "#0f0";
           label.style.left = (feldPosition[feld].x + 50) + "px";
