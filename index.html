@@ -5,7 +5,44 @@
   <meta charset="UTF-8">
   <title>Prototyp – Marker zentriert mit getScreenCTM()</title>
   <script src="gameState_v1_marker.js">
-function setupScrollSync() {
+
+function startMarkerAnimationLoop() {
+  const svgDoc = document.getElementById("karte_obj").contentDocument;
+  const startmarker = gameState.startaufstellung || [];
+
+  function update() {
+    for (const marker of startmarker) {
+      const hex = svgDoc.getElementById(marker.feld);
+      if (!hex) continue;
+
+      const bbox = hex.getBBox();
+      const cx = bbox.x + bbox.width / 2;
+      const cy = bbox.y + bbox.height / 2;
+
+      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
+      pt.x = cx;
+      pt.y = cy;
+      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
+
+      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
+      const el = document.querySelector(selector);
+      if (el) {
+        el.style.left = `${screenPoint.x}px`;
+        el.style.top = `${screenPoint.y}px`;
+      }
+
+      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
+      if (label) {
+        label.style.left = screenPoint.x + "px";
+        label.style.top = screenPoint.y + "px";
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+}
+
   const svgDoc = document.getElementById("karte_obj").contentDocument;
   const startmarker = gameState.startaufstellung || [];
 
@@ -44,7 +81,44 @@ function setupScrollSync() {
 </script>
 
   <script src="karte_marker_v2.js">
-function setupScrollSync() {
+
+function startMarkerAnimationLoop() {
+  const svgDoc = document.getElementById("karte_obj").contentDocument;
+  const startmarker = gameState.startaufstellung || [];
+
+  function update() {
+    for (const marker of startmarker) {
+      const hex = svgDoc.getElementById(marker.feld);
+      if (!hex) continue;
+
+      const bbox = hex.getBBox();
+      const cx = bbox.x + bbox.width / 2;
+      const cy = bbox.y + bbox.height / 2;
+
+      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
+      pt.x = cx;
+      pt.y = cy;
+      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
+
+      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
+      const el = document.querySelector(selector);
+      if (el) {
+        el.style.left = `${screenPoint.x}px`;
+        el.style.top = `${screenPoint.y}px`;
+      }
+
+      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
+      if (label) {
+        label.style.left = screenPoint.x + "px";
+        label.style.top = screenPoint.y + "px";
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+}
+
   const svgDoc = document.getElementById("karte_obj").contentDocument;
   const startmarker = gameState.startaufstellung || [];
 
@@ -239,10 +313,47 @@ document.getElementById("karte_obj").addEventListener("load", () => {
   }
 
   debug(`✔️ Platzierte Marker: ${platzierteMarker}`);
-  setupScrollSync();
+  startMarkerAnimationLoop();
 });
 
-function setupScrollSync() {
+
+function startMarkerAnimationLoop() {
+  const svgDoc = document.getElementById("karte_obj").contentDocument;
+  const startmarker = gameState.startaufstellung || [];
+
+  function update() {
+    for (const marker of startmarker) {
+      const hex = svgDoc.getElementById(marker.feld);
+      if (!hex) continue;
+
+      const bbox = hex.getBBox();
+      const cx = bbox.x + bbox.width / 2;
+      const cy = bbox.y + bbox.height / 2;
+
+      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
+      pt.x = cx;
+      pt.y = cy;
+      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
+
+      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
+      const el = document.querySelector(selector);
+      if (el) {
+        el.style.left = `${screenPoint.x}px`;
+        el.style.top = `${screenPoint.y}px`;
+      }
+
+      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
+      if (label) {
+        label.style.left = screenPoint.x + "px";
+        label.style.top = screenPoint.y + "px";
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+}
+
   const svgDoc = document.getElementById("karte_obj").contentDocument;
   const startmarker = gameState.startaufstellung || [];
 
