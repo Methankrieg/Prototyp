@@ -166,7 +166,7 @@ document.getElementById("karte_obj").addEventListener("load", () => {
 
     const key = marker.fraktion + "_" + typ;
     const template = markerTemplates[key];
-    if (!template || template.trim() === '') {
+    if (!template || template.trim().length < 5) {
     debug(`❌ Kein Template geladen: ${key}`);
     debug(`❌ Kein Template geladen: ${key}`);
 
@@ -178,6 +178,14 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     wrapper.classList.add("marker");
     wrapper.dataset.markerId = `${marker.feld}-${marker.einheit}`;
     wrapper.innerHTML = template;
+    // Erzwinge Styles auf alle Unterelemente
+    Array.from(wrapper.querySelectorAll("*")).forEach(el => {
+      el.style.maxWidth = "100%";
+      el.style.maxHeight = "100%";
+      el.style.boxSizing = "border-box";
+      el.style.objectFit = "contain";
+      el.style.display = "block";
+    });
     wrapper.style.zIndex = platzierteMarker + 10;
     wrapper.style.left = `${pos.x}px`;
     wrapper.style.top = `${pos.y}px`;
