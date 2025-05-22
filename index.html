@@ -3,7 +3,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Prototyp – Marker mit getBBox()</title>
+  <title>Prototyp – Marker zentriert mit getScreenCTM()</title>
   <script src="gameState_v1_marker.js"></script>
   <script src="karte_marker_v2.js"></script>
   <style>
@@ -100,7 +100,7 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     markerCount[marker.feld] = (markerCount[marker.feld] || 0) + 1;
   }
 
-  // Berechne Mittelpunkt aller verwendeten Hexe mit getBBox()
+  // Berechne Mittelpunkt aller verwendeten Hexe mit getBBox() + getScreenCTM
   for (const feld in markerCount) {
     const hex = svgDoc.getElementById(feld);
     if (!hex) {
@@ -111,13 +111,26 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     const bbox = hex.getBBox();
     const cx = bbox.x + bbox.width / 2;
     const cy = bbox.y + bbox.height / 2;
-    feldPosition[feld] = {x: cx, y: cy};
+
+    const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
+    pt.x = cx;
+    pt.y = cy;
+    const screenPoint = pt.matrixTransform(hex.getScreenCTM());
+
+    feldPosition[feld] = {x: screenPoint.x, y: screenPoint.y};
   }
 
+  
   // Marker platzieren
+  debug("➤ Beginne Markerplatzierung...");
+
+
   for (const marker of startmarker) {
     const pos = feldPosition[marker.feld];
-    if (!pos) continue;
+    if (!pos) {
+    debug(`⚠️ Position für ${marker.feld} nicht verfügbar.`);
+    continue;
+}
 
     let typ = "standard";
     if (marker.einheit.startsWith("admiral")) typ = "admiral";
@@ -128,6 +141,8 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     const key = marker.fraktion + "_" + typ;
     const template = markerTemplates[key];
     if (!template) {
+    debug(`❌ Template ${key} nicht gefunden.`);
+
       debug(`❌ Kein Template geladen: ${key}`);
       continue;
     }
@@ -139,6 +154,8 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     wrapper.style.top = `${pos.y}px`;
 
     document.body.appendChild(wrapper);
+    debug(`✅ Marker platziert bei ${marker.feld} (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`);
+    debug(`✔️ Template verwendet: ${key}`);
     platzierteMarker++;
   }
 
