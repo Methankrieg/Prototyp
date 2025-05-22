@@ -1,201 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Prototyp – Marker zentriert mit getScreenCTM()</title>
-  <script src="gameState_v1_marker.js">
-
-function startMarkerAnimationLoop() {
-  const svgDoc = document.getElementById("karte_obj").contentDocument;
-  
-if (typeof gameState === 'undefined') {
-  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
-  return;
-}
-if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
-  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
-  return;
-}
-const startmarker = gameState.startaufstellung;
-
-
-  function update() {
-    for (const marker of startmarker) {
-      const hex = svgDoc.getElementById(marker.feld);
-      if (!hex) continue;
-
-      const bbox = hex.getBBox();
-      const cx = bbox.x + bbox.width / 2;
-      const cy = bbox.y + bbox.height / 2;
-
-      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
-      pt.x = cx;
-      pt.y = cy;
-      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
-
-      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
-      const el = document.querySelector(selector);
-      if (el) {
-        el.style.left = `${screenPoint.x}px`;
-        el.style.top = `${screenPoint.y}px`;
-      }
-
-      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
-      if (label) {
-        label.style.left = screenPoint.x + "px";
-        label.style.top = screenPoint.y + "px";
-      }
-    }
-    requestAnimationFrame(update);
-  }
-
-  requestAnimationFrame(update);
-}
-
-  const svgDoc = document.getElementById("karte_obj").contentDocument;
-  
-if (typeof gameState === 'undefined') {
-  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
-  return;
-}
-if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
-  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
-  return;
-}
-const startmarker = gameState.startaufstellung;
-
-
-  function updatePositions() {
-    for (const marker of startmarker) {
-      const hex = svgDoc.getElementById(marker.feld);
-      if (!hex) continue;
-
-      const bbox = hex.getBBox();
-      const cx = bbox.x + bbox.width / 2;
-      const cy = bbox.y + bbox.height / 2;
-      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
-      pt.x = cx;
-      pt.y = cy;
-      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
-
-      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
-      const el = document.querySelector(selector);
-      if (el) {
-        el.style.left = `${screenPoint.x}px`;
-        el.style.top = `${screenPoint.y}px`;
-      }
-
-      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
-      if (label) {
-        label.style.left = `${screenPoint.x}px`;
-        label.style.top = `${screenPoint.y}px`;
-      }
-    }
-  }
-
-  document.getElementById("container").addEventListener("scroll", updatePositions);
-  window.addEventListener("resize", updatePositions);
-}
-
-</script>
-
-  <script src="karte_marker_v2.js">
-
-function startMarkerAnimationLoop() {
-  const svgDoc = document.getElementById("karte_obj").contentDocument;
-  
-if (typeof gameState === 'undefined') {
-  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
-  return;
-}
-if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
-  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
-  return;
-}
-const startmarker = gameState.startaufstellung;
-
-
-  function update() {
-    for (const marker of startmarker) {
-      const hex = svgDoc.getElementById(marker.feld);
-      if (!hex) continue;
-
-      const bbox = hex.getBBox();
-      const cx = bbox.x + bbox.width / 2;
-      const cy = bbox.y + bbox.height / 2;
-
-      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
-      pt.x = cx;
-      pt.y = cy;
-      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
-
-      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
-      const el = document.querySelector(selector);
-      if (el) {
-        el.style.left = `${screenPoint.x}px`;
-        el.style.top = `${screenPoint.y}px`;
-      }
-
-      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
-      if (label) {
-        label.style.left = screenPoint.x + "px";
-        label.style.top = screenPoint.y + "px";
-      }
-    }
-    requestAnimationFrame(update);
-  }
-
-  requestAnimationFrame(update);
-}
-
-  const svgDoc = document.getElementById("karte_obj").contentDocument;
-  
-if (typeof gameState === 'undefined') {
-  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
-  return;
-}
-if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
-  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
-  return;
-}
-const startmarker = gameState.startaufstellung;
-
-
-  function updatePositions() {
-    for (const marker of startmarker) {
-      const hex = svgDoc.getElementById(marker.feld);
-      if (!hex) continue;
-
-      const bbox = hex.getBBox();
-      const cx = bbox.x + bbox.width / 2;
-      const cy = bbox.y + bbox.height / 2;
-      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
-      pt.x = cx;
-      pt.y = cy;
-      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
-
-      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
-      const el = document.querySelector(selector);
-      if (el) {
-        el.style.left = `${screenPoint.x}px`;
-        el.style.top = `${screenPoint.y}px`;
-      }
-
-      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
-      if (label) {
-        label.style.left = `${screenPoint.x}px`;
-        label.style.top = `${screenPoint.y}px`;
-      }
-    }
-  }
-
-  document.getElementById("container").addEventListener("scroll", updatePositions);
-  window.addEventListener("resize", updatePositions);
-}
-
-</script>
-
+  <title>Prototyp – Vollständige Version (Debug + Marker + Zähler + Diagnose)</title>
+  <script src="gameState_v1_marker.js"></script>
+  <script src="karte_marker_v2.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -261,7 +70,7 @@ const startmarker = gameState.startaufstellung;
 <div id="container">
   <object id="karte_obj" type="image/svg+xml" data="Sektor_Template_mit_MarkerTargets.svg"></object>
 </div>
-<div id="debug-panel">Debug: Initialisiert... (Diagnose-Modus aktiv)</div>
+<div id="debug-panel">Debug: Initialisiert... (Vollständiger Modus aktiv)</div>
 
 <script>
 function debug(msg) {
@@ -273,34 +82,35 @@ function debug(msg) {
 }
 
 document.getElementById("karte_obj").addEventListener("load", () => {
+  if (typeof gameState === 'undefined') {
+    debug("→ gameState verfügbar: ❌ NEIN");
+    debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
+    return;
+  }
+  debug("→ gameState verfügbar: ✅ JA");
+
+  if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
+    debug("→ gameState.startaufstellung vorhanden: ❌ NEIN");
+    debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
+    return;
+  }
+  debug("→ gameState.startaufstellung vorhanden: ✅ JA (" + gameState.startaufstellung.length + " Marker)");
+
   const svgDoc = document.getElementById("karte_obj").contentDocument;
   if (!svgDoc) {
     debug("❌ SVG-Dokument konnte nicht geladen werden.");
     return;
   }
 
-  
-if (typeof gameState === 'undefined') {
-  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
-  return;
-}
-if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
-  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
-  return;
-}
-const startmarker = gameState.startaufstellung;
-
-  debug(`Startmarker erkannt: ${startmarker.length}`);
-  let platzierteMarker = 0;
+  const startmarker = gameState.startaufstellung;
   const feldPosition = {};
   const markerCount = {};
+  let platzierteMarker = 0;
 
-  // Zähle Marker pro Feld
-  for (const marker of startmarker) {
+  startmarker.forEach(marker => {
     markerCount[marker.feld] = (markerCount[marker.feld] || 0) + 1;
-  }
+  });
 
-  // Berechne Mittelpunkt aller verwendeten Hexe mit getBBox() + getScreenCTM
   for (const feld in markerCount) {
     const hex = svgDoc.getElementById(feld);
     if (!hex) {
@@ -320,10 +130,12 @@ const startmarker = gameState.startaufstellung;
     feldPosition[feld] = {x: screenPoint.x, y: screenPoint.y};
   }
 
-  // Marker platzieren
-  for (const marker of startmarker) {
+  startmarker.forEach(marker => {
     const pos = feldPosition[marker.feld];
-    if (!pos) continue;
+    if (!pos) {
+      debug(`⚠️ Position für ${marker.feld} nicht verfügbar.`);
+      return;
+    }
 
     let typ = "standard";
     if (marker.einheit.startsWith("admiral")) typ = "admiral";
@@ -334,52 +146,42 @@ const startmarker = gameState.startaufstellung;
     const key = marker.fraktion + "_" + typ;
     const template = markerTemplates[key];
     if (!template) {
-      debug(`❌ Kein Template geladen: ${key}`);
-      continue;
+      debug(`❌ Template ${key} nicht gefunden.`);
+      return;
     }
 
     const wrapper = document.createElement("div");
-    wrapper.dataset.markerId = `${marker.feld}-${marker.einheit}`;
     wrapper.classList.add("marker");
+    wrapper.dataset.markerId = `${marker.feld}-${marker.einheit}`;
     wrapper.innerHTML = template;
     wrapper.style.left = `${pos.x}px`;
     wrapper.style.top = `${pos.y}px`;
-
     document.body.appendChild(wrapper);
-    platzierteMarker++;
-  }
 
-  // Zähler anzeigen
+    debug(`→ Verarbeite Marker: ${marker.einheit} @ ${marker.feld}`);
+    debug(`✔️ Template verwendet: ${key}`);
+    debug(`✅ Marker platziert bei ${marker.feld} (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`);
+    platzierteMarker++;
+  });
+
   for (const feld in markerCount) {
     if (markerCount[feld] > 1 && feldPosition[feld]) {
       const label = document.createElement("div");
       label.classList.add("count-label");
       label.textContent = `×${markerCount[feld]}`;
+      label.dataset.countId = feld;
       label.style.left = feldPosition[feld].x + "px";
       label.style.top = feldPosition[feld].y + "px";
-      label.dataset.countId = feld;
       document.body.appendChild(label);
     }
   }
 
   debug(`✔️ Platzierte Marker: ${platzierteMarker}`);
-  startMarkerAnimationLoop();
+  startMarkerAnimationLoop(startmarker);
 });
 
-
-function startMarkerAnimationLoop() {
+function startMarkerAnimationLoop(startmarker) {
   const svgDoc = document.getElementById("karte_obj").contentDocument;
-  
-if (typeof gameState === 'undefined') {
-  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
-  return;
-}
-if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
-  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
-  return;
-}
-const startmarker = gameState.startaufstellung;
-
 
   function update() {
     for (const marker of startmarker) {
@@ -413,53 +215,6 @@ const startmarker = gameState.startaufstellung;
 
   requestAnimationFrame(update);
 }
-
-  const svgDoc = document.getElementById("karte_obj").contentDocument;
-  
-if (typeof gameState === 'undefined') {
-  debug("❌ Fehler: gameState ist nicht definiert – ist die Datei gameState_v1_marker.js geladen?");
-  return;
-}
-if (!gameState.startaufstellung || !Array.isArray(gameState.startaufstellung)) {
-  debug("❌ Fehler: gameState.startaufstellung fehlt oder ist ungültig.");
-  return;
-}
-const startmarker = gameState.startaufstellung;
-
-
-  function updatePositions() {
-    for (const marker of startmarker) {
-      const hex = svgDoc.getElementById(marker.feld);
-      if (!hex) continue;
-
-      const bbox = hex.getBBox();
-      const cx = bbox.x + bbox.width / 2;
-      const cy = bbox.y + bbox.height / 2;
-      const pt = svgDoc.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGPoint();
-      pt.x = cx;
-      pt.y = cy;
-      const screenPoint = pt.matrixTransform(hex.getScreenCTM());
-
-      const selector = `[data-marker-id="${marker.feld}-${marker.einheit}"]`;
-      const el = document.querySelector(selector);
-      if (el) {
-        el.style.left = `${screenPoint.x}px`;
-        el.style.top = `${screenPoint.y}px`;
-      }
-
-      const label = document.querySelector(`[data-count-id="${marker.feld}"]`);
-      if (label) {
-        label.style.left = `${screenPoint.x}px`;
-        label.style.top = `${screenPoint.y}px`;
-      }
-    }
-  }
-
-  document.getElementById("container").addEventListener("scroll", updatePositions);
-  window.addEventListener("resize", updatePositions);
-}
-
 </script>
-
 </body>
 </html>
