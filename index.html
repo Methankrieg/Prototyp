@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Prototyp – Marker laden & debuggen</title>
+  <title>Prototyp – Marker exakt im Hex</title>
   <script src="gameState_v1_marker.js"></script>
   <script src="karte_marker_v2.js"></script>
   <style>
@@ -30,11 +30,24 @@
       position: absolute;
       transform: translate(-50%, -50%);
       z-index: 10;
+      pointer-events: none;
     }
     .marker img {
       max-width: 100%;
       height: auto;
       display: block;
+    }
+    .count-label {
+      position: absolute;
+      background: #0f0;
+      color: #000;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      z-index: 20;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
     #debug-panel {
       position: absolute;
@@ -68,22 +81,8 @@ function debug(msg) {
   console.log("[DEBUG]", msg);
 }
 
-let scale = 1;
-const container = document.getElementById("container");
-const obj = document.getElementById("karte_obj");
-
-container.addEventListener("wheel", (e) => {
-  e.preventDefault();
-  const direction = e.deltaY > 0 ? -0.1 : 0.1;
-  scale = Math.min(Math.max(0.2, scale + direction), 4);
-  obj.style.transform = `scale(${scale})`;
-  document.querySelectorAll(".marker").forEach(m => {
-    m.style.transform = `translate(-50%, -50%) scale(${scale})`;
-  });
-});
-
-obj.addEventListener("load", async () => {
-  const svgDoc = obj.contentDocument;
+document.getElementById("karte_obj").addEventListener("load", () => {
+  const svgDoc = document.getElementById("karte_obj").contentDocument;
   if (!svgDoc) {
     debug("❌ SVG-Dokument konnte nicht geladen werden.");
     return;
@@ -92,14 +91,39 @@ obj.addEventListener("load", async () => {
   const startmarker = gameState.startaufstellung || [];
   debug(`Startmarker erkannt: ${startmarker.length}`);
   let platzierteMarker = 0;
+  const feldPosition = {};
+  const markerCount = {};
 
+  // Zähle Marker pro Feld
   for (const marker of startmarker) {
-    debug(`→ Verarbeite Marker: ${marker.einheit} @ ${marker.feld}`);
-    const hex = svgDoc.getElementById(marker.feld);
+    markerCount[marker.feld] = (markerCount[marker.feld] || 0) + 1;
+  }
+
+  // Berechne Mittelpunkt aller verwendeten Hexe
+  for (const feld in markerCount) {
+    const hex = svgDoc.getElementById(feld);
     if (!hex) {
-      debug(`❌ Feld nicht gefunden: ${marker.feld}`);
+      debug(`❌ Feld nicht gefunden: ${feld}`);
       continue;
     }
+    const pointsAttr = hex.getAttribute("points");
+    if (!pointsAttr) {
+      debug(`❌ Kein 'points'-Attribut im Polygon für ${feld}`);
+      continue;
+    }
+    const coords = pointsAttr.trim().split(" ").map(p => {
+      const [x, y] = p.split(",").map(Number);
+      return {x, y};
+    });
+    const cx = coords.reduce((sum, p) => sum + p.x, 0) / coords.length;
+    const cy = coords.reduce((sum, p) => sum + p.y, 0) / coords.length;
+    feldPosition[feld] = {x: cx, y: cy};
+  }
+
+  // Marker platzieren
+  for (const marker of startmarker) {
+    const pos = feldPosition[marker.feld];
+    if (!pos) continue;
 
     let typ = "standard";
     if (marker.einheit.startsWith("admiral")) typ = "admiral";
@@ -108,9 +132,6 @@ obj.addEventListener("load", async () => {
     else if (marker.einheit.includes("jäger")) typ = "jaeger";
 
     const key = marker.fraktion + "_" + typ;
-    if (!markerTemplates[key]) {
-      await loadMarkerTemplate(marker.fraktion, typ);
-    }
     const template = markerTemplates[key];
     if (!template) {
       debug(`❌ Kein Template geladen: ${key}`);
@@ -120,18 +141,23 @@ obj.addEventListener("load", async () => {
     const wrapper = document.createElement("div");
     wrapper.classList.add("marker");
     wrapper.innerHTML = template;
-
-    const bbox = hex.getBoundingClientRect();
-    const svgBBox = svgDoc.documentElement.getBoundingClientRect();
-    const x = bbox.left - svgBBox.left + bbox.width / 2 + window.scrollX;
-    const y = bbox.top - svgBBox.top + bbox.height / 2 + window.scrollY;
-    wrapper.style.left = `${x}px`;
-    wrapper.style.top = `${y}px`;
-    wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    wrapper.style.left = `${pos.x}px`;
+    wrapper.style.top = `${pos.y}px`;
 
     document.body.appendChild(wrapper);
-    debug(`✅ Marker platziert bei ${marker.feld} (${x.toFixed(1)}, ${y.toFixed(1)})`);
     platzierteMarker++;
+  }
+
+  // Zähler anzeigen
+  for (const feld in markerCount) {
+    if (markerCount[feld] > 1 && feldPosition[feld]) {
+      const label = document.createElement("div");
+      label.classList.add("count-label");
+      label.textContent = `×${markerCount[feld]}`;
+      label.style.left = feldPosition[feld].x + "px";
+      label.style.top = feldPosition[feld].y + "px";
+      document.body.appendChild(label);
+    }
   }
 
   debug(`✔️ Platzierte Marker: ${platzierteMarker}`);
