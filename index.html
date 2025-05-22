@@ -25,6 +25,11 @@
       transition: transform 0.1s ease-out;
     }
     .marker {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       outline: 1px solid red;
       box-sizing: border-box;
       width: 64px;
@@ -35,6 +40,9 @@
       pointer-events: none;
     }
     .marker img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       max-width: 100%;
       height: auto;
       display: block;
