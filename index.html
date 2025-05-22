@@ -156,7 +156,7 @@ document.getElementById("karte_obj").addEventListener("load", () => {
     wrapper.innerHTML = template;
     wrapper.style.left = `${pos.x}px`;
     wrapper.style.top = `${pos.y}px`;
-    document.body.appendChild(wrapper);
+    document.getElementById('container').appendChild(wrapper);
 
     debug(`→ Verarbeite Marker: ${marker.einheit} @ ${marker.feld}`);
     debug(`✔️ Template verwendet: ${key}`);
@@ -172,7 +172,7 @@ document.getElementById("karte_obj").addEventListener("load", () => {
       label.dataset.countId = feld;
       label.style.left = feldPosition[feld].x + "px";
       label.style.top = feldPosition[feld].y + "px";
-      document.body.appendChild(label);
+      document.getElementById('container').appendChild(label);
     }
   }
 
